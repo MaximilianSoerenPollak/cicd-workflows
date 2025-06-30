@@ -61,9 +61,9 @@ jobs:
       - name: Setup Bazel with shared caching
         uses: bazel-contrib/setup-bazel@0.14.0
         with:
-          disk-cache: true
-          repository-cache: true
-          bazelisk-cache: true
+          disk-cache: false
+          repository-cache: false
+          bazelisk-cache: false
 
       - name: Install Graphviz
         uses: eclipse-score/apt-install@main
