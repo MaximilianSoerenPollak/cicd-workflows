@@ -69,7 +69,7 @@ jobs:
         uses: eclipse-score/apt-install@main
         with:
           packages: graphviz
-          apt_update: true
+          version: 2.44
 
       - name: Build documentation
         run: |
