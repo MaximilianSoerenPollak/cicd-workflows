@@ -70,7 +70,6 @@ jobs:
         with:
           packages: graphviz
           version: 2.44
-          cache: false
 
       - name: Build documentation
         run: |
