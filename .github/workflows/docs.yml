@@ -41,6 +41,11 @@ on:
         type: string
         required: false
         default: "workflow"
+      pre-build-command:
+        description: "A command to run before the documentation build (e.g. bazel test //...)"
+        required: false
+        default: "" 
+        type: string
 
 env:
   CACHE_KEY_PREFIX: bazel-cache
@@ -132,6 +137,10 @@ jobs:
           echo ""
           echo "Directory structure:"
           find tests-report -type d | sort
+
+      - name: Run pre-build-command
+        if: ${{ inputs.pre-build-command != '' }}
+        run: ${{ inputs.pre-build-command }}
 
       - name: Build documentation
         run: |
