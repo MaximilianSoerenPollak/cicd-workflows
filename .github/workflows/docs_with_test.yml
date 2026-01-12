@@ -11,7 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Documentation Build
+name: Documentation Build with Unit-Tests
 
 on:
   workflow_call:
@@ -28,6 +28,11 @@ on:
         type: string
       bazel-target:
         description: "The Bazel target to build (e.g., //docs)"
+        required: false
+        type: string
+        default: "//:docs"
+      bazel-test-target:
+        description: "The Bazel target to test (e.g., //src/...)"
         required: false
         type: string
         default: "//:docs"
@@ -132,6 +137,14 @@ jobs:
           echo ""
           echo "Directory structure:"
           find tests-report -type d | sort
+
+      - name: Run Unit-Tests
+        run: |
+          bazel --output_base="${{ steps.paths.outputs.output_base }}" run \
+            --repo_contents_cache="${{ steps.paths.outputs.repo_contents }}" \
+            --repository_cache="${{ steps.paths.outputs.repo_cache }}" \
+            --disk_cache="${{ steps.paths.outputs.disk_cache }}" \
+              ${{ inputs.bazel-test-target }}
 
       - name: Build documentation
         run: |
