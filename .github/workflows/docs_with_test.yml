@@ -31,11 +31,15 @@ on:
         required: false
         type: string
         default: "//:docs"
+      bazel-venv-target:
+        description: "The target to generate the virtualenv if needed (e.g., //:ide_support)"
+        required: false
+        type: string
       bazel-test-target:
         description: "The Bazel target to test (e.g., //src/...)"
         required: false
         type: string
-        default: "//:docs"
+        default: "//src/..."
       tests-report-artifact:
         description: "Name of the artifact that contains test reports"
         required: false
@@ -138,9 +142,18 @@ jobs:
           echo "Directory structure:"
           find tests-report -type d | sort
 
-      - name: Run Unit-Tests
+      - name: Run Venv
+        if: ${{ inputs.bazel-venv-target != '' }}
         run: |
           bazel --output_base="${{ steps.paths.outputs.output_base }}" run \
+            --repo_contents_cache="${{ steps.paths.outputs.repo_contents }}" \
+            --repository_cache="${{ steps.paths.outputs.repo_cache }}" \
+            --disk_cache="${{ steps.paths.outputs.disk_cache }}" \
+              ${{ inputs.bazel-venv-target }}
+
+      - name: Run Unit-Tests
+        run: |
+          bazel --output_base="${{ steps.paths.outputs.output_base }}" test \
             --repo_contents_cache="${{ steps.paths.outputs.repo_contents }}" \
             --repository_cache="${{ steps.paths.outputs.repo_cache }}" \
             --disk_cache="${{ steps.paths.outputs.disk_cache }}" \
